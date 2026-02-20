@@ -63,12 +63,14 @@
                         <span class="text-xs text-gray-500 block">الإحداثيات الأصلية الكاملة</span>
                         <span id="latlongVal" class="font-mono font-bold text-blue-900">-</span>
                     </div>
-                    <!--<button type="button" onclick="copyIndividualField('latlongVal')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded flex items-center gap-1 transition-colors text-sm">
+                    <!--
+                    <button type="button" onclick="copyIndividualField('latlongVal')" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded flex items-center gap-1 transition-colors text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
                         </svg>
                         نسخ
-                    </button>-->
+                    </button>
+                    -->
                 </div>
             </div>
         </div>
@@ -80,7 +82,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">اسم المسوق</label>
-                        <input type="text" id="fullName" placeholder="أدخل الاسم" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 outline-none">
+                        <select id="fullName" required onchange="updateCombinedText()" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 outline-none bg-white">
+                            <option value="" disabled selected>اختر اسم الموظف</option>
+                            <option value="احمد طايس">احمد طايس</option>
+                            <option value="مصطفى يونس">مصطفى يونس</option>
+                            <option value="بكر سمير">بكر سمير</option>
+                            <option value="حسن عماد">حسن عماد</option>
+                            <option value="محمد اياد">محمد اياد</option>
+                            <option value="عبدالقادر بكر">عبدالقادر بكر</option>
+                            <option value="غيث حميد">غيث حميد</option>
+                            <option value="رسول سامر">رسول سامر</option>
+                        </select>
                         
                         <label class="block text-sm font-medium text-gray-700 mt-3 mb-1">المحلة (Neighborhood)</label>
                         <input type="text" id="neighborhood" class="w-full p-2 border border-gray-300 rounded-md outline-none bg-gray-50" readonly>
@@ -106,18 +118,19 @@
 
                 <!-- حقل التجميع والنسخ -->
                 <div class="mt-6 p-4 bg-gray-100 rounded-lg border border-dashed border-gray-400">
-                    <label class="block text-sm font-bold text-gray-700 mb-2">النص المجمع للنسخ (الاسم / الحي / الزون)</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">النص المجمع للنسخ (الاسم - الحي)</label>
                     <div class="flex gap-2">
-                        <textarea id="combinedField" readonly class="flex-1 p-2 bg-white border border-gray-300 rounded-md font-bold text-gray-800 text-sm h-24" placeholder="الاسم / الحي / الزون"></textarea>
+                        <textarea id="combinedField" readonly class="flex-1 p-2 bg-white border border-gray-300 rounded-md font-bold text-gray-800 text-sm h-24" placeholder="الاسم - الحي"></textarea>
                         <button type="button" onclick="copyCombinedText()" class="bg-gray-800 hover:bg-black text-white px-4 py-2 rounded-md transition-colors flex items-center self-start">
                             <span>نسخ الكل</span>
                         </button>
                     </div>
                 </div>
-
+                <!--
                 <div class="pt-4 border-t">
                     <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition-all shadow-md">تأكيد البيانات</button>
                 </div>
+                -->
             </form>
         </div>
     </div>
@@ -180,10 +193,9 @@
                 // تحديث حقل الإحداثيات المنفصل
                 document.getElementById('jitteredCoordsField').value = coords;
                 
-                // تحديث الحقل المجمع
+                // تحديث الحقل المجمع (الاسم - الحي)
                 document.getElementById('combinedField').value = `${name} - ${addr}`;
             } else {
-                const zone = document.getElementById('zoneSearch').value || "الزون";
                 document.getElementById('combinedField').value = `${name} - الحي`;
             }
         }
@@ -247,7 +259,6 @@
 
             zoneInp.addEventListener('input', performSearch);
             fatInp.addEventListener('input', performSearch);
-            document.getElementById('fullName').addEventListener('input', updateCombinedText);
         }
 
         // دالة لنسخ حقل محدد (يدعم span أو input)
@@ -255,7 +266,7 @@
             const element = document.getElementById(fieldId);
             let textToCopy = "";
             
-            if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
+            if (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.tagName === "SELECT") {
                 textToCopy = element.value;
             } else {
                 textToCopy = element.innerText;
